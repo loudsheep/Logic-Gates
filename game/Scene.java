@@ -53,6 +53,8 @@ public class Scene {
 
         nodes.add(new ANDGate(sketch, 50, 50, 60, 40));
         nodes.add(new NOTGate(sketch, 300, 200, 60, 40));
+        nodes.add(new NOTGate(sketch, 400, 200, 60, 40));
+        nodes.add(new NOTGate(sketch, 500, 200, 60, 40));
     }
 
     public void show() {
@@ -290,6 +292,26 @@ public class Scene {
         }
 
         return false;
+    }
+
+    public void save() {
+
+        ArrayList<ConnectionNode> all = new ArrayList<>();
+
+        all.addAll(input);
+        all.addAll(output);
+
+
+        Circuit c = new Circuit(nodes, connections, all, input.size(), output.size());
+
+        for (Node n : c.nodes) {
+            System.out.println(n.inNodes + " <<<<<<<<<");
+        }
+
+        //c.calculate();
+
+        System.out.println(c.output.get(0).state);
+
     }
 
     public int getWidth() {

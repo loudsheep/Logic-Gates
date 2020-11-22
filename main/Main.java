@@ -33,6 +33,15 @@ public class Main extends PApplet {
         scene.mouseWheel(e);
     }
 
+    public void keyPressed() {
+        if(keyCode == 32) {
+            scene.save();
+        }
+//        if(mousePressed) {
+//            noLoop();
+//        }
+    }
+
     public static void main(String[] args) {
         PApplet.main("main.Main", args);
     }
