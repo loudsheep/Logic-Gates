@@ -1,6 +1,5 @@
 package game.node.connection;
 
-import game.node.Node;
 import processing.core.PApplet;
 
 public class ConnectionNode {
@@ -22,6 +21,13 @@ public class ConnectionNode {
         this.r = r;
     }
 
+    public ConnectionNode(float posX, float posY, boolean in, float r) {
+        this.posX = posX;
+        this.posY = posY;
+        this.in = in;
+        this.r = r;
+    }
+
     public void show() {
         //sketch.stroke(0);
         sketch.noStroke();
@@ -30,7 +36,9 @@ public class ConnectionNode {
         } else {
             sketch.fill(80);
         }
-        sketch.ellipse(posX, posY, r*2, r*2);
+        sketch.ellipse(posX, posY, r * 2, r * 2);
+
+        //System.out.println(this.getClass());
     }
 
     public Connection getConnection() {
@@ -45,5 +53,9 @@ public class ConnectionNode {
             this.connection = connection;
             occupied = false;
         }
+    }
+
+    public void setSketch(PApplet sketch) {
+        this.sketch = sketch;
     }
 }

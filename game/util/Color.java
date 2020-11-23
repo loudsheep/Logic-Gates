@@ -10,4 +10,8 @@ public final class Color {
         this.g = g;
         this.b = b;
     }
+
+    public static Color random() {
+        return new Color((float) Math.random() * 255, (float) Math.random() * 255, (float) Math.random() * 255);
+    }
 }

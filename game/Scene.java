@@ -1,6 +1,7 @@
 package game;
 
-import game.node.*;
+import game.node.ANDGate;
+import game.node.NOTGate;
 import game.node.Node;
 import game.node.connection.Connection;
 import game.node.connection.ConnectionNode;
@@ -20,6 +21,10 @@ public class Scene {
     Connection newConnection;
     private boolean grabbingNode = false;
     private Node grabbedNode;
+
+    float r = 10;
+
+    StringBuilder name;
 
     NodeBar bar;
     float barHeight;
@@ -41,6 +46,7 @@ public class Scene {
         this.height -= barHeight;
 
         sketch.getSurface().setTitle("Logic gates simulation");
+        name = new StringBuilder();
 
         nodes = new ArrayList<>();
         connections = new ArrayList<>();
@@ -48,13 +54,12 @@ public class Scene {
         input = new ArrayList<>();
         output = new ArrayList<>();
 
-        input.add(new InputConnection(sketch, 10, height / 2f, false, 10));
-        output.add(new OutputConnection(sketch, width - 10, height / 2f, true, 10));
+        input.add(new InputConnection(sketch, 10, height / 2f, false, r));
+        output.add(new OutputConnection(sketch, width - 10, height / 2f, true, r));
 
         nodes.add(new ANDGate(sketch, 50, 50, 60, 40));
-        nodes.add(new NOTGate(sketch, 300, 200, 60, 40));
-        nodes.add(new NOTGate(sketch, 400, 200, 60, 40));
-        nodes.add(new NOTGate(sketch, 500, 200, 60, 40));
+        nodes.add(new NOTGate(sketch, 300, 300, 60, 40));
+        //nodes.add(new NOTGate(sketch, 300, 200, 60, 40));
     }
 
     public void show() {
@@ -62,6 +67,11 @@ public class Scene {
         if (grabbingNode) {
             grabbedNode.shift(sketch.mouseX, sketch.mouseY);
         }
+
+        sketch.noStroke();
+        sketch.fill(255);
+        sketch.textSize(10);
+        sketch.text("Circuit name: " + name.toString(), sketch.textWidth("Circuit name: " + name.toString()) / 2, 10);
 
         bar.show();
         for (Node n : nodes) {
@@ -82,7 +92,7 @@ public class Scene {
 
             sketch.stroke(0, 255, 0);
             sketch.strokeWeight(2);
-            sketch.line(newConnection.getStrartPos().x, newConnection.getStrartPos().y, newConnection.getEndPos().x, newConnection.getEndPos().y);
+            sketch.line(newConnection.getStartPos().x, newConnection.getStartPos().y, newConnection.getEndPos().x, newConnection.getEndPos().y);
         }
 
         for (Connection c : connections) {
@@ -95,7 +105,7 @@ public class Scene {
 
             sketch.strokeWeight(2);
 
-            sketch.line(c.getStrartPos().x, c.getStrartPos().y, c.getEndPos().x, c.getEndPos().y);
+            sketch.line(c.getStartPos().x, c.getStartPos().y, c.getEndPos().x, c.getEndPos().y);
         }
     }
 
@@ -284,6 +294,33 @@ public class Scene {
 
     }
 
+    public void keyPressed() {
+        if (sketch.keyCode == sketch.ENTER) {
+            save(name.toString());
+        } else if (sketch.keyCode == 32) {
+            name.append(" ");
+        } else if (sketch.keyCode == sketch.BACKSPACE) {
+            if (name.length() > 0) {
+                name.deleteCharAt(name.length() - 1);
+            }
+        } else {
+            if (name.length() < 10) {
+                if (isAlphabetic((char) sketch.keyCode) || isNumeric((char) sketch.keyCode)) {
+                    name.append((char) sketch.keyCode);
+                }
+            }
+        }
+    }
+
+    private boolean isNumeric(char chr) {
+        return chr >= '0' && chr <= '9';
+    }
+
+    private boolean isAlphabetic(char chr) {
+        return (chr >= 'A' && chr <= 'Z') ||
+                (chr >= 'a' && chr <= 'z');
+    }
+
     private boolean connectionExists(Connection connection) {
         for (Connection c : connections) {
             if (c.nodeFrom == connection.nodeFrom && c.nodeTo == connection.nodeTo) {
@@ -294,24 +331,29 @@ public class Scene {
         return false;
     }
 
-    public void save() {
+    public void save(String name) {
 
-        ArrayList<ConnectionNode> all = new ArrayList<>();
-
-        all.addAll(input);
-        all.addAll(output);
-
-
-        Circuit c = new Circuit(nodes, connections, all, input.size(), output.size());
-
-        for (Node n : c.nodes) {
-            System.out.println(n.inNodes + " <<<<<<<<<");
+        Node newNode = Node.createNewNode(name, input.size(), output.size(), 60, 40, nodes, connections, input, output);
+        for (ConnectionNode c : newNode.getAllNodes()) {
+            System.out.println(c.getClass());
         }
+        newNode.setSketch(sketch);
 
-        //c.calculate();
+        nodes = new ArrayList<>();
+        connections = new ArrayList<>();
 
-        System.out.println(c.output.get(0).state);
+        input = new ArrayList<>();
+        output = new ArrayList<>();
+        this.name = new StringBuilder();
 
+        input.add(new InputConnection(sketch, 10, height / 2f, false, r));
+        output.add(new OutputConnection(sketch, width - 10, height / 2f, true, r));
+
+        nodes.add(new ANDGate(sketch, 50, 50, 60, 40));
+        nodes.add(new NOTGate(sketch, 300, 200, 60, 40));
+        nodes.add(new NOTGate(sketch, 300, 300, 60, 40));
+
+        nodes.add(newNode);
     }
 
     public int getWidth() {

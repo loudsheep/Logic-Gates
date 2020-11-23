@@ -34,11 +34,9 @@ public class Main extends PApplet {
     }
 
     public void keyPressed() {
-        if(keyCode == 32) {
-            scene.save();
-        }
-//        if(mousePressed) {
-//            noLoop();
+        scene.keyPressed();
+//        if(keyCode == 32) {
+//            scene.save();
 //        }
     }
 

@@ -27,7 +27,7 @@ public class Connection {
         nodeTo.state = state;
     }
 
-    public PVector getStrartPos() {
+    public PVector getStartPos() {
         return new PVector(nodeFrom.posX, nodeFrom.posY);
     }
 

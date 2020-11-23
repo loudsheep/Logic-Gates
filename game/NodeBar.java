@@ -18,6 +18,7 @@ public class NodeBar {
 
     public void show() {
         sketch.stroke(255);
+        sketch.strokeWeight(1);
         sketch.noFill();
         sketch.rect(x, y, width, height);
     }
